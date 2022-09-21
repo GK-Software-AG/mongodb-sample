@@ -7,7 +7,7 @@ For further reference, please consider the following links:
 
 * [MongoDB documentation](https://www.mongodb.com/docs/manual/introduction/)
 * [MongoDB query operators reference](https://docs.mongodb.com/manual/reference/operator/query/)
-* [MongoDB aggregation operators reference](https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/
+* [MongoDB aggregation operators reference](https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/)
 * [MongoDB Tutorials and Articles: The Complete Collection - DZone](https://dzone.com/articles/mongodb-cluster)
 
 
