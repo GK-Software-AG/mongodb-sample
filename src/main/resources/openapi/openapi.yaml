@@ -1,0 +1,316 @@
+openapi: 3.0.0
+info:
+  title: Conference API
+  version: '1.0'
+  description: Sample Conference API
+servers:
+  - url: 'http://localhost:8080/api'
+paths:
+  '/initData':
+    post:
+      summary: Init Test Data
+      operationId: init-data
+      tags:
+        - init
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - years
+              properties:
+                years:
+                  type: array
+                  items:
+                    type: integer
+                  example: [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024]
+      responses:
+        '200':
+          description: Test Data Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+        '400':
+          description: Missing Required Information
+  '/conferences/{conferenceId}':
+    parameters:
+      - schema:
+          type: string
+        name: conferenceId
+        in: path
+        required: true
+    get:
+      summary: Get Conference Info by ID
+      tags:
+       - conference
+      responses:
+        '200':
+          description: Conference Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conference'
+              examples: { }
+        '404':
+          description: Conference Not Found
+      operationId: read-conference
+      description: Retrieve the information of the Conference with the matching ID.
+    put:
+      summary: Update Conference Information
+      operationId: update-conference
+      tags:
+        - conference
+      responses:
+        '200':
+          description: Conference Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conference'
+        '404':
+          description: Conference Not Found
+      description: Update the information of an existing conference.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConferenceBody'
+        description: Conference to update.
+  '/conferences':
+    get:
+      summary: List Conferences
+      tags:
+        - conference
+      responses:
+        '200':
+          description: Conferences Found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conference'
+      operationId: list-conferences
+      description: Retrieve the information of the Conferences
+    post:
+      summary: Create New Conference
+      operationId: create-conference
+      tags:
+        - conference
+      responses:
+        '200':
+          description: Conference Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conference'
+        '400':
+          description: Missing Required Information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConferenceBody'
+            examples: { }
+        description: Post the necessary fields for the API to create a new Conference.
+      description: Create a new Conference.
+    parameters: [ ]
+  '/conferences-talks/{conferenceTalkId}':
+    parameters:
+      - schema:
+          type: string
+        name: conferenceTalkId
+        in: path
+        required: true
+    get:
+      summary: Get ConferenceTalk Info by ID
+      tags:
+        - conferenceTalk
+      responses:
+        '200':
+          description: ConferenceTalk Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConferenceTalk'
+              examples: {}
+        '404':
+          description: ConferenceTalk Not Found
+      operationId: read-conference-talk
+      description: Retrieve the information of the ConferenceTalk with the matching ID.
+    put:
+      summary: Update ConferenceTalk Information
+      operationId: update-conference-talk
+      tags:
+        - conferenceTalk
+      responses:
+        '200':
+          description: ConferenceTalk Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConferenceTalk'
+        '404':
+          description: ConferenceTalk Not Found
+      description: Update the information of an existing conferenceTalk.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConferenceTalkBody'
+        description: ConferenceTalk to update.
+  '/conferences/{conferenceId}/talks':
+    parameters:
+      - schema:
+          type: string
+        name: conferenceId
+        in: path
+        required: true
+    get:
+      summary: Get ConferenceTalks for given conference
+      tags:
+        - conferenceTalk
+      responses:
+        '200':
+          description: ConferenceTalks Found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConferenceTalk'
+        '404':
+          description: Conference Not Found
+      operationId: list-conference-talks
+      description: Retrieve the information of the ConferenceTalks with the matching conference.
+    post:
+      summary: Create New ConferenceTalk
+      operationId: create-conference-talk
+      tags:
+        - conferenceTalk
+      responses:
+        '200':
+          description: ConferenceTalk Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConferenceTalk'
+        '400':
+          description: Missing Required Information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConferenceTalkBody'
+            examples: {}
+        description: Post the necessary fields for the API to create a new ConferenceTalk.
+      description: Create a new ConferenceTalk.
+components:
+  schemas:
+    Presenter:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        gender:
+          type: string
+          enum:
+            - MALE
+            - FEMALE
+            - DIVERSE
+            - UNKNOWN
+        title:
+          type: string
+    Location:
+      type: object
+      properties:
+        name:
+          type: string
+        city:
+          type: string
+        street:
+          type: string
+        zipCode:
+          type: string
+        country:
+          type: string
+    Conference:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+        - $ref: "#/components/schemas/ConferenceBody"
+    ConferenceBody:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - DRAFT
+            - RFP_OPEN
+            - RFP_CLOSED
+            - PLANNED
+            - DONE
+            - CANCELLED
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        location:
+          $ref: '#/components/schemas/Location'
+        tags:
+          type: array
+          items:
+            type: string
+    ConferenceTalk:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+            conferenceId:
+              type: string
+            submissionDate:
+              type: string
+              format: date-time
+        - $ref: "#/components/schemas/ConferenceTalkBody"
+    ConferenceTalkBody:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - PROPOSED
+            - ACCEPTED
+            - DECLINED
+            - CANCELLED
+        presenters:
+          type: array
+          items:
+            $ref: "#/components/schemas/Presenter"
+        description:
+          type: string
+        presentationDate:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string

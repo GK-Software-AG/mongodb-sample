@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.7.3</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+  <groupId>com.gksoftware.poc.mongo</groupId>
+  <artifactId>mongo-sample</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>mongo-sample</name>
+  <description>Demo project for Spring Boot with MongoDB</description>
+  <properties>
+    <java.version>11</java.version>
+    <mapstruct.version>1.5.2.Final</mapstruct.version>
+    <!--  <lombok-maven-plugin.version>1.18.12.0</lombok-maven-plugin.version> -->
+    <openapi-generator-maven-plugin-version>6.1.0</openapi-generator-maven-plugin-version>
+    <openapi-generator-resttemplate-supporting-files-to-generate>
+      HttpBearerAuth.java,ApiClient.java,OAuth.java,ApiKeyAuth.java,Authentication.java,HttpBasicAuth.java,RFC3339DateFormat.java,OAuthFlow.java,Api.java,Pair.java
+    </openapi-generator-resttemplate-supporting-files-to-generate>
+    <default.package>com.gksoftware.poc.mongo</default.package>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <!-- Exclude Spring Boot's Default Logging -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Add Log4j2 Dependency -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-log4j2</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <version>${mapstruct.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct-processor</artifactId>
+      <scope>provided</scope>
+      <version>${mapstruct.version}</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>com.querydsl</groupId>
+      <artifactId>querydsl-mongodb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.querydsl</groupId>
+      <artifactId>querydsl-apt</artifactId>
+    </dependency>
+
+
+    <!-- OpenAPI -->
+    <dependency>
+      <groupId>org.openapitools</groupId>
+      <artifactId>jackson-databind-nullable</artifactId>
+      <version>0.2.3</version>
+    </dependency>
+    <!--<dependency>
+      <groupId>de.flapdoodle.embed</groupId>
+      <artifactId>de.flapdoodle.embed.mongo.spring27x</artifactId>
+      <version>1.1.1</version>
+    </dependency>-->
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mongodb</artifactId>
+      <version>1.17.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapi-generator-maven-plugin-version}</version>
+        <configuration>
+          <!-- language file, like e.g. JavaJaxRSCodegen shipped with swagger -->
+          <generatorName>spring</generatorName>
+          <apiPackage>${default.package}.api</apiPackage>
+          <modelPackage>${default.package}.dtomodel</modelPackage>
+          <invokerPackage>${default.package}.handler</invokerPackage>
+          <modelNameSuffix>DTO</modelNameSuffix>
+          <generateApiTests>false</generateApiTests>
+          <generateModelTests>false</generateModelTests>
+          <generateSupportingFiles>true</generateSupportingFiles>
+          <supportingFilesToGenerate>ApiUtil.java,PagingSupport.java</supportingFilesToGenerate>
+          <output>${project.build.directory}/generated-sources</output>
+          <!-- pass any necessary config options -->
+          <configOptions>
+            <java8>true</java8>
+            <dateLibrary>java8</dateLibrary>
+            <annotationLibrary>none</annotationLibrary>
+            <documentationProvider>source</documentationProvider>
+            <interfaceOnly>true</interfaceOnly>
+            <useTags>true</useTags>
+            <sourceFolder>openapi</sourceFolder>
+            <configPackage>${default.package}.configuration</configPackage>
+          </configOptions>
+        </configuration>
+        <executions>
+          <execution>
+            <id>openapi</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/openapi/openapi.yaml</inputSpec>
+            </configuration>
+          </execution>
+        </executions>
+
+
+      </plugin>
+      <plugin>
+        <groupId>com.mysema.maven</groupId>
+        <artifactId>apt-maven-plugin</artifactId>
+        <version>1.1.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/generated-sources/java</outputDirectory>
+              <processor>org.springframework.data.mongodb.repository.support.MongoAnnotationProcessor</processor>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

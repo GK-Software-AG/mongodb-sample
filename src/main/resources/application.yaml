@@ -1,0 +1,33 @@
+spring.application.name: mongodb-sample
+
+info:
+  name: MongoDB Sample
+server:
+  port: 8080
+  error.include-message: always
+  # Service connection timeout (time to read the request)
+  tomcat.connection-timeout: 60000
+  # Maximum queue for requests. Recommended for fluctuating load ~250
+  tomcat.accept-count: 250
+
+# Spring Boot actuator
+management:
+  endpoints.web.exposure.include: "*"
+  endpoint:
+    env:
+      post.enabled: true
+# micrometer
+endpoints.default.web.enabled: true
+
+openapi:
+  conference:
+    base-path: api
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.12
+        storage:
+          databaseDir: dbdir
+#spring.data.mongodb.uri: mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}/testdb?retryWrites=true&w=majority
+spring.data.mongodb.uri: mongodb://localhost/conference
